@@ -9,17 +9,14 @@ $(document).ready(function () {
 
   console.log("DOM READY");
 
-  // START
   $("#start-btn").on("click", function () {
     startGame();
   });
 
-  // RESTART
   $("#restart-btn").on("click", function () {
     location.reload();
   });
 
-  // ANSWER CLICK (delegation)
   $(document).on("click", ".answer-btn", function () {
 
     if (!canClick) return;
@@ -37,7 +34,6 @@ $(document).ready(function () {
       $("#feedback").text("✖ Wrong!").css("color", "red");
       $(this).addClass("btn-danger");
 
-      // näytä oikea vastaus
       $(".answer-btn").each(function () {
         if ($(this).data("answer") === correct) {
           $(this).addClass("btn-success");
@@ -64,8 +60,6 @@ $(document).ready(function () {
 
 function startGame() {
 
-  console.log("START GAME");
-
   score = 0;
   current = 0;
   canClick = true;
@@ -82,9 +76,7 @@ function startGame() {
       questions = res.data.results;
       showQuestion();
     })
-    .catch(err => {
-      console.log("API ERROR:", err);
-    });
+    .catch(err => console.log(err));
 }
 
 function showQuestion() {
@@ -112,93 +104,8 @@ function showQuestion() {
 
 function endGame() {
 
-  console.log("GAME OVER");
-
   $("#quiz-screen").addClass("d-none");
   $("#end-screen").removeClass("d-none");
 
-  $("#final-score").text(score);
-}  $("#score").text(score);
-  $("#feedback").text("");
-
-  $("#start-screen").hide();
-  $("#end-screen").hide();
-  $("#quiz-screen").removeClass("d-none");
-
-  axios.get("https://opentdb.com/api.php?amount=10&type=multiple")
-    .then(res => {
-      questions = res.data.results;
-      showQuestion();
-    })
-    .catch(err => console.log(err));
-}
-
-function showQuestion() {
-
-  $("#feedback").text("");
-
-  let q = questions[current];
-
-  let answers = [...q.incorrect_answers, q.correct_answer];
-  answers.sort(() => Math.random() - 0.5);
-
-  $("#question").html(q.question);
-  $("#answers").empty();
-
-  answers.forEach(a => {
-    $("#answers").append(`
-      <button class="btn btn-outline-light w-100 my-2 answer-btn"
-        data-answer="${a}">
-        ${a}
-      </button>
-    `);
-  });
-}
-
-function endGame() {
-  $("#quiz-screen").addClass("d-none");
-  $("#end-screen").removeClass("d-none");
-  $("#final-score").text(score);
-}
-  $("#score").text(score);
-  $("#feedback").text("");
-
-  $("#start-screen").hide();
-  $("#end-screen").hide();
-  $("#quiz-screen").removeClass("d-none");
-
-  axios.get("https://opentdb.com/api.php?amount=10&type=multiple")
-    .then(res => {
-      questions = res.data.results;
-      showQuestion();
-    })
-    .catch(err => console.log(err));
-}
-
-function showQuestion() {
-
-  $("#feedback").text("");
-
-  let q = questions[current];
-
-  let answers = [...q.incorrect_answers, q.correct_answer];
-  answers.sort(() => Math.random() - 0.5);
-
-  $("#question").html(q.question);
-  $("#answers").empty();
-
-  answers.forEach(a => {
-    $("#answers").append(`
-      <button class="btn btn-outline-light w-100 my-2 answer-btn"
-        data-answer="${a}">
-        ${a}
-      </button>
-    `);
-  });
-}
-
-function endGame() {
-  $("#quiz-screen").addClass("d-none");
-  $("#end-screen").removeClass("d-none");
   $("#final-score").text(score);
 }
