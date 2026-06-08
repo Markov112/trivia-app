@@ -1,9 +1,16 @@
 body {
-    font-family: Arial;
-  }
-  
-  #answers button {
-    font-size: 18px;
-  }
+  font-family: Arial;
+}
 
-  
+.answer-btn {
+  font-size: 18px;
+  transition: 0.2s;
+}
+
+.answer-btn:hover {
+  transform: scale(1.02);
+}
+
+#feedback {
+  font-size: 20px;
+}
