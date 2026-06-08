@@ -2,7 +2,7 @@
 <html lang="fi">
 <head>
   <meta charset="UTF-8">
-  <title>Trivia Quiz</title>
+  <title>Trivia Game</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -11,18 +11,22 @@
 
 <div class="container py-5 text-center">
 
-  <h1 class="mb-4">🧠 Trivia Quiz!</h1>
+  <h1 class="mb-4">🧠 Trivia Game</h1>
 
   <div id="start-screen">
-    <button id="start-btn" class="btn btn-primary btn-lg">Start Quiz</button>
+    <button id="start-btn" class="btn btn-primary btn-lg">Start</button>
   </div>
 
   <div id="quiz-screen" class="d-none">
-    <h3 id="question"></h3>
 
-    <div id="answers" class="mt-4"></div>
+    <h3 id="question" class="mb-4"></h3>
 
-    <h5 class="mt-4">Score: <span id="score">0</span></h5>
+    <div id="answers"></div>
+
+    <h4 class="mt-4">Score: <span id="score">0</span></h4>
+
+    <p id="feedback" class="fw-bold mt-3"></p>
+
   </div>
 
   <div id="end-screen" class="d-none">
@@ -35,6 +39,10 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html><script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="app.js"></script>
 
 </body>
