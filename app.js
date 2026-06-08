@@ -1,8 +1,8 @@
-console.log("APP LOADED");
-
 let questions = [];
 let currentQuestion = 0;
 let score = 0;
+
+console.log("APP LOADED");
 
 $(document).ready(function () {
 
@@ -14,7 +14,6 @@ $(document).ready(function () {
     location.reload();
   });
 
-  // turvallinen click handler
   $(document).on("click", ".answer-btn", function () {
     const selected = $(this).data("answer");
     checkAnswer(selected);
@@ -38,9 +37,7 @@ function startGame() {
       questions = res.data.results;
       showQuestion();
     })
-    .catch(err => {
-      console.log("API error", err);
-    });
+    .catch(err => console.log(err));
 }
 
 function showQuestion() {
@@ -54,11 +51,11 @@ function showQuestion() {
   $("#question").html(q.question);
   $("#answers").empty();
 
-  answers.forEach(ans => {
+  answers.forEach(a => {
     $("#answers").append(`
       <button class="btn btn-outline-light w-100 my-2 answer-btn"
-        data-answer="${ans}">
-        ${ans}
+        data-answer="${a}">
+        ${a}
       </button>
     `);
   });
@@ -86,7 +83,6 @@ function checkAnswer(selected) {
 }
 
 function endGame() {
-
   $("#quiz-screen").addClass("d-none");
   $("#end-screen").removeClass("d-none");
 
@@ -97,70 +93,4 @@ function decodeHTML(text) {
   const txt = document.createElement("textarea");
   txt.innerHTML = text;
   return txt.value;
-}      showQuestion();
-    })
-    .catch(err => {
-      console.error("API error:", err);
-    });
-}
-
-function showQuestion() {
-
-  let q = questions[currentQuestion];
-
-  let answers = [...q.incorrect_answers];
-  answers.push(q.correct_answer);
-
-  // shuffle
-  answers.sort(() => Math.random() - 0.5);
-
-  $("#question").html(q.question);
-  $("#answers").empty();
-
-  answers.forEach(answer => {
-    $("#answers").append(`
-      <button class="btn btn-outline-light w-100 my-1 answer-btn"
-        data-answer="${answer}">
-        ${answer}
-      </button>
-    `);
-  });
-}
-
-function checkAnswer(selected, correct) {
-
-  let userAnswer = decodeHTML(selected);
-  let correctAnswer = decodeHTML(correct);
-
-  console.log("selected:", userAnswer);
-  console.log("correct:", correctAnswer);
-
-  if (userAnswer === correctAnswer) {
-    score++;
-  }
-
-  $("#score").text(score);
-
-  currentQuestion++;
-
-  if (currentQuestion < questions.length) {
-    showQuestion();
-  } else {
-    endGame();
-  }
-}
-
-function endGame() {
-  $("#quiz-screen").addClass("d-none");
-  $("#end-screen").removeClass("d-none");
-
-  $("#final-score").text(score);
-}
-
-// FIX HTML ENTITIES (IMPORTANT)
-function decodeHTML(html) {
-  let txt = document.createElement("textarea");
-  txt.innerHTML = html;
-  return txt.value;
-}
 }
