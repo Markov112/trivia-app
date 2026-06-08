@@ -1,46 +1,76 @@
 let questions = [];
 let current = 0;
 let score = 0;
-let answered = false;
+let canClick = true;
 
 $(document).ready(function () {
 
-  $("#start-btn").on("click", startGame);
-  $("#restart-btn").on("click", () => location.reload());
+  $("#start-btn").click(function () {
+    startGame();
+  });
+
+  $("#restart-btn").click(function () {
+    location.reload();
+  });
 
   $(document).on("click", ".answer-btn", function () {
-    if (answered) return;
 
-    answered = true;
+    if (!canClick) return;
+    canClick = false;
 
-    let selected = $(this);
-    let answer = selected.data("answer");
+    let selected = $(this).data("answer");
     let correct = questions[current].correct_answer;
 
-    checkAnswer(answer, correct, selected);
+    if (selected === correct) {
+      score++;
+      $("#score").text(score);
+      $("#feedback").text("✔ Correct").css("color", "lightgreen");
+      $(this).addClass("btn-success");
+    } else {
+      $("#feedback").text("✖ Wrong").css("color", "red");
+      $(this).addClass("btn-danger");
+
+      $(".answer-btn").each(function () {
+        if ($(this).data("answer") === correct) {
+          $(this).addClass("btn-success");
+        }
+      });
+    }
+
+    setTimeout(() => {
+      current++;
+      showQuestion();
+      canClick = true;
+    }, 1000);
+
   });
 
 });
 
 function startGame() {
 
+  console.log("START");
+
   score = 0;
   current = 0;
 
   $("#score").text(score);
+  $("#feedback").text("");
+
   $("#start-screen").hide();
+  $("#end-screen").hide();
   $("#quiz-screen").removeClass("d-none");
 
   axios.get("https://opentdb.com/api.php?amount=10&type=multiple")
     .then(res => {
       questions = res.data.results;
       showQuestion();
-    });
+    })
+    .catch(err => console.log(err));
 }
 
 function showQuestion() {
 
-  answered = false;
   $("#feedback").text("");
 
   let q = questions[current];
@@ -51,81 +81,18 @@ function showQuestion() {
   $("#question").html(q.question);
   $("#answers").empty();
 
-  answers.forEach(ans => {
+  answers.forEach(a => {
     $("#answers").append(`
       <button class="btn btn-outline-light w-100 my-2 answer-btn"
-        data-answer="${ans}">
-        ${ans}
+        data-answer="${a}">
+        ${a}
       </button>
     `);
   });
 }
 
-function checkAnswer(selected, correct, btn) {
-
-  if (selected === correct) {
-    score++;
-    $("#score").text(score);
-    $("#feedback").text("✔ Correct!").css("color", "lightgreen");
-    btn.removeClass("btn-outline-light").addClass("btn-success");
-  } else {
-    $("#feedback").text("✖ Wrong!").css("color", "red");
-    btn.removeClass("btn-outline-light").addClass("btn-danger");
-
-    // näytä oikea vastaus vihreänä
-    $(".answer-btn").each(function () {
-      if ($(this).data("answer") === correct) {
-        $(this).addClass("btn-success");
-      }
-    });
-  }
-
-  setTimeout(() => {
-    current++;
-
-    if (current < questions.length) {
-      showQuestion();
-    } else {
-      endGame();
-    }
-  }, 1000);
-}
-
 function endGame() {
   $("#quiz-screen").addClass("d-none");
   $("#end-screen").removeClass("d-none");
   $("#final-score").text(score);
-}
-function checkAnswer(selected) {
-
-  const correct = questions[currentQuestion].correct_answer;
-
-  const user = decodeHTML(selected);
-  const right = decodeHTML(correct);
-
-  if (user === right) {
-    score++;
-    $("#score").text(score);
-  }
-
-  currentQuestion++;
-
-  if (currentQuestion < questions.length) {
-    showQuestion();
-  } else {
-    endGame();
-  }
-}
-
-function endGame() {
-  $("#quiz-screen").addClass("d-none");
-  $("#end-screen").removeClass("d-none");
-
-  $("#final-score").text(score);
-}
-
-function decodeHTML(text) {
-  const txt = document.createElement("textarea");
-  txt.innerHTML = text;
-  return txt.value;
 }
