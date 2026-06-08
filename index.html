@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Trivia Game</title>
 
+  <!-- Bootstrap tyylit käyttöliittymän nopeaan rakentamiseen -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -11,34 +12,53 @@
 
 <div class="container py-5 text-center">
 
+  <!-- Otsikko -->
   <h1 class="mb-4">🧠 Trivia Game</h1>
 
+  <!-- Aloitusruutu -->
   <div id="start-screen">
     <button id="start-btn" class="btn btn-primary btn-lg">Start</button>
   </div>
 
+  <!-- Kyselyruutu (piilotettu alussa d-none-luokalla) -->
   <div id="quiz-screen" class="d-none">
 
+    <!-- Nykyinen kysymys -->
     <h3 id="question" class="mb-4"></h3>
 
+    <!-- Vastausvaihtoehdot lisätään tänne JavaScriptillä -->
     <div id="answers"></div>
 
+    <!-- Pisteet -->
     <h4 class="mt-4">Score: <span id="score">0</span></h4>
 
+    <!-- Palaute oikeasta/väärästä vastauksesta -->
     <p id="feedback" class="fw-bold mt-3"></p>
 
   </div>
 
+  <!-- Lopetusruutu -->
   <div id="end-screen" class="d-none">
+
+    <!-- Pelin päättyessä näkyvä viesti -->
     <h2>Game Over 🎉</h2>
+
+    <!-- Lopullinen pistemäärä -->
     <h3>Your score: <span id="final-score"></span></h3>
+
+    <!-- Uudelleenaloitusnappi -->
     <button id="restart-btn" class="btn btn-success mt-3">Play again</button>
   </div>
 
 </div>
 
+<!-- jQuery (DOM-manipulointi ja eventit) -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Axios (API-kutsut) -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- Oma JavaScript-logiikka -->
 <script src="app.js"></script>
 
 </body>
