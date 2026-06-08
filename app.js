@@ -1,24 +1,24 @@
 // Taulukko, johon haetut kysymykset tallennetaan
 let questions = [];
 
-// Nykyisen kysymyksen indeksi
+// Nykyne kysymys
 let current = 0;
 
 // Pelaajan pisteet
 let score = 0;
 
-// Estää usean vastauksen samaan kysymykseen
+// voi vastaa van yhen
 let answered = false;
 
 $(document).ready(function () {
 
-  // Aloita peli -nappi
+  // startti nappi
   $("#start-btn").on("click", startGame);
 
-  // Uudelleenkäynnistys (lataa sivun uudelleen)
+  // restartti
   $("#restart-btn").on("click", () => location.reload());
 
-  // Vastauspainikkeiden klikkaus (event delegation)
+  // vastaus klikki
   $(document).on("click", ".answer-btn", function () {
     if (answered) return; // jos kysymykseen on jo vastattu, estä lisäklikkaukset
 
@@ -43,7 +43,7 @@ function startGame() {
   $("#start-screen").hide();
   $("#quiz-screen").removeClass("d-none");
 
-  // Haetaan 10 monivalintakysymystä Open Trivia Databasesta
+  // hakee 10 kyssäriä tuola opentrivia databasesta
   axios.get("https://opentdb.com/api.php?amount=10&type=multiple")
     .then(res => {
       questions = res.data.results;
@@ -51,7 +51,7 @@ function startGame() {
     });
 }
 
-// Näyttää nykyisen kysymyksen ja vastausvaihtoehdot
+// Näyttää kysymyksen ja vastausvaihtoehdot
 function showQuestion() {
 
   answered = false;
@@ -62,7 +62,7 @@ function showQuestion() {
   // yhdistetään oikea ja väärät vastaukset
   let answers = [...q.incorrect_answers, q.correct_answer];
 
-  // sekoitetaan vastausjärjestys
+  // sekoittaa vastaukset
   answers.sort(() => Math.random() - 0.5);
 
   $("#question").html(q.question);
@@ -79,7 +79,7 @@ function showQuestion() {
   });
 }
 
-// Tarkistaa vastauksen oikeellisuuden
+// Tarkistaa onko oikein vastaus
 function checkAnswer(selected, correct, btn) {
 
   if (selected === correct) {
@@ -88,7 +88,7 @@ function checkAnswer(selected, correct, btn) {
 
     $("#feedback").text("✔ Correct!").css("color", "lightgreen");
 
-    // merkitään oikea vastaus vihreäksi
+    // oikea vastaus vihreäksi
     btn.removeClass("btn-outline-light").addClass("btn-success");
   } else {
     $("#feedback").text("✖ Wrong!").css("color", "red");
@@ -116,7 +116,7 @@ function checkAnswer(selected, correct, btn) {
   }, 1000);
 }
 
-// Pelin lopetus ja tulosten näyttö
+// peli loppuu ja tulos näkyville
 function endGame() {
   $("#quiz-screen").addClass("d-none");
   $("#end-screen").removeClass("d-none");
