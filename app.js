@@ -1,3 +1,8 @@
+function decodeHTML(html) {
+  let txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+}
 let questions = [];
 let currentQuestion = 0;
 let score = 0;
@@ -38,26 +43,29 @@ function showQuestion() {
 
   $("#answers").empty();
 
-  answers.forEach(answer => {
-    $("#answers").append(`
-      <button class="btn btn-outline-light w-100 my-1 answer-btn">
-        ${answer}
-      </button>
-    `);
-  });
+ answers.forEach(answer => {
+  $("#answers").append(`
+    <button class="btn btn-outline-light w-100 my-1 answer-btn"
+      data-answer="${answer}">
+      ${answer}
+    </button>
+  `);
+});
 
-  $(".answer-btn").click(function () {
-    checkAnswer($(this).text(), q.correct_answer);
-  });
-}
+$(".answer-btn").click(function () {
+  checkAnswer($(this).data("answer"), q.correct_answer);
+});
 
 function checkAnswer(selected, correct) {
-  if (selected === correct) {
+
+  let userAnswer = decodeHTML(selected);
+  let correctAnswer = decodeHTML(correct);
+
+  if (userAnswer === correctAnswer) {
     score++;
   }
 
   $("#score").text(score);
-
   currentQuestion++;
 
   if (currentQuestion < questions.length) {
