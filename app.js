@@ -57,7 +57,8 @@ $(".answer-btn").click(function () {
 });
 
 function checkAnswer(selected, correct) {
-
+console.log("selected:", selected);
+console.log("correct:", correct);
   let userAnswer = decodeHTML(selected);
   let correctAnswer = decodeHTML(correct);
 
