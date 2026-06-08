@@ -37,11 +37,18 @@ $(document).ready(function () {
       });
     }
 
-    setTimeout(() => {
-      current++;
-      showQuestion();
-      canClick = true;
-    }, 1000);
+   setTimeout(() => {
+
+  current++;
+
+  if (current < questions.length) {
+    showQuestion();
+    canClick = true;
+  } else {
+    endGame();
+  }
+
+}, 1000);
 
   });
 
