@@ -1,3 +1,5 @@
+console.log("APP LOADED");
+
 let questions = [];
 let current = 0;
 let score = 0;
@@ -5,14 +7,19 @@ let canClick = true;
 
 $(document).ready(function () {
 
-  $("#start-btn").click(function () {
+  console.log("DOM READY");
+
+  // START
+  $("#start-btn").on("click", function () {
     startGame();
   });
 
-  $("#restart-btn").click(function () {
+  // RESTART
+  $("#restart-btn").on("click", function () {
     location.reload();
   });
 
+  // ANSWER CLICK (delegation)
   $(document).on("click", ".answer-btn", function () {
 
     if (!canClick) return;
@@ -24,12 +31,13 @@ $(document).ready(function () {
     if (selected === correct) {
       score++;
       $("#score").text(score);
-      $("#feedback").text("✔ Correct").css("color", "lightgreen");
+      $("#feedback").text("✔ Correct!").css("color", "lightgreen");
       $(this).addClass("btn-success");
     } else {
-      $("#feedback").text("✖ Wrong").css("color", "red");
+      $("#feedback").text("✖ Wrong!").css("color", "red");
       $(this).addClass("btn-danger");
 
+      // näytä oikea vastaus
       $(".answer-btn").each(function () {
         if ($(this).data("answer") === correct) {
           $(this).addClass("btn-success");
@@ -38,6 +46,7 @@ $(document).ready(function () {
     }
 
     setTimeout(() => {
+
       current++;
 
       if (current < questions.length) {
@@ -51,16 +60,65 @@ $(document).ready(function () {
 
   });
 
-}); // 👈 TÄMÄ PUUTTUI SUN KOODISTA
+});
 
 function startGame() {
 
-  console.log("START");
+  console.log("START GAME");
 
   score = 0;
   current = 0;
+  canClick = true;
 
   $("#score").text(score);
+  $("#feedback").text("");
+
+  $("#start-screen").hide();
+  $("#end-screen").hide();
+  $("#quiz-screen").removeClass("d-none");
+
+  axios.get("https://opentdb.com/api.php?amount=10&type=multiple")
+    .then(res => {
+      questions = res.data.results;
+      showQuestion();
+    })
+    .catch(err => {
+      console.log("API ERROR:", err);
+    });
+}
+
+function showQuestion() {
+
+  canClick = true;
+  $("#feedback").text("");
+
+  let q = questions[current];
+
+  let answers = [...q.incorrect_answers, q.correct_answer];
+  answers.sort(() => Math.random() - 0.5);
+
+  $("#question").html(q.question);
+  $("#answers").empty();
+
+  answers.forEach(a => {
+    $("#answers").append(`
+      <button class="btn btn-outline-light w-100 my-2 answer-btn"
+        data-answer="${a}">
+        ${a}
+      </button>
+    `);
+  });
+}
+
+function endGame() {
+
+  console.log("GAME OVER");
+
+  $("#quiz-screen").addClass("d-none");
+  $("#end-screen").removeClass("d-none");
+
+  $("#final-score").text(score);
+}  $("#score").text(score);
   $("#feedback").text("");
 
   $("#start-screen").hide();
