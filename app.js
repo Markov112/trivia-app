@@ -1,22 +1,23 @@
 let questions = [];
-let currentQuestion = 0;
+let current = 0;
 let score = 0;
-
-console.log("APP LOADED");
+let answered = false;
 
 $(document).ready(function () {
 
-  $("#start-btn").on("click", function () {
-    startGame();
-  });
-
-  $("#restart-btn").on("click", function () {
-    location.reload();
-  });
+  $("#start-btn").on("click", startGame);
+  $("#restart-btn").on("click", () => location.reload());
 
   $(document).on("click", ".answer-btn", function () {
-    const selected = $(this).data("answer");
-    checkAnswer(selected);
+    if (answered) return;
+
+    answered = true;
+
+    let selected = $(this);
+    let answer = selected.data("answer");
+    let correct = questions[current].correct_answer;
+
+    checkAnswer(answer, correct, selected);
   });
 
 });
@@ -24,43 +25,77 @@ $(document).ready(function () {
 function startGame() {
 
   score = 0;
-  currentQuestion = 0;
+  current = 0;
 
   $("#score").text(score);
-
   $("#start-screen").hide();
-  $("#end-screen").hide();
   $("#quiz-screen").removeClass("d-none");
 
   axios.get("https://opentdb.com/api.php?amount=10&type=multiple")
     .then(res => {
       questions = res.data.results;
       showQuestion();
-    })
-    .catch(err => console.log(err));
+    });
 }
 
 function showQuestion() {
 
-  const q = questions[currentQuestion];
+  answered = false;
+  $("#feedback").text("");
 
-  const answers = [...q.incorrect_answers, q.correct_answer];
+  let q = questions[current];
 
+  let answers = [...q.incorrect_answers, q.correct_answer];
   answers.sort(() => Math.random() - 0.5);
 
   $("#question").html(q.question);
   $("#answers").empty();
 
-  answers.forEach(a => {
+  answers.forEach(ans => {
     $("#answers").append(`
       <button class="btn btn-outline-light w-100 my-2 answer-btn"
-        data-answer="${a}">
-        ${a}
+        data-answer="${ans}">
+        ${ans}
       </button>
     `);
   });
 }
 
+function checkAnswer(selected, correct, btn) {
+
+  if (selected === correct) {
+    score++;
+    $("#score").text(score);
+    $("#feedback").text("✔ Correct!").css("color", "lightgreen");
+    btn.removeClass("btn-outline-light").addClass("btn-success");
+  } else {
+    $("#feedback").text("✖ Wrong!").css("color", "red");
+    btn.removeClass("btn-outline-light").addClass("btn-danger");
+
+    // näytä oikea vastaus vihreänä
+    $(".answer-btn").each(function () {
+      if ($(this).data("answer") === correct) {
+        $(this).addClass("btn-success");
+      }
+    });
+  }
+
+  setTimeout(() => {
+    current++;
+
+    if (current < questions.length) {
+      showQuestion();
+    } else {
+      endGame();
+    }
+  }, 1000);
+}
+
+function endGame() {
+  $("#quiz-screen").addClass("d-none");
+  $("#end-screen").removeClass("d-none");
+  $("#final-score").text(score);
+}
 function checkAnswer(selected) {
 
   const correct = questions[currentQuestion].correct_answer;
